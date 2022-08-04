@@ -1,6 +1,4 @@
-import java.text.Normalizer;
 import java.util.Scanner;
-
 
 class q02 {
 
@@ -10,7 +8,7 @@ class q02 {
 
             if (s.charAt(index) >= 'A' && s.charAt(index) <='Z') { return 1 + isMaiuscula(s, index+1);}
 
-            if (s.charAt(index) >= 'a' && s.charAt(index) <='z' || s.charAt(index) >= ' ' && s.charAt(index) <= '@') { 
+            if (s.charAt(index) < 'A' || s.charAt(index) > 'Z') { // ignora carcteres que não são maiúsculos
                 return 0 + isMaiuscula(s, index+1);
             }
         }
@@ -24,17 +22,12 @@ class q02 {
         int cont = 0;
 
         try (Scanner input = new Scanner(System.in)) {
-            while (true){
+            while(true){
                 
                 String string = input.nextLine();
 
-                string = Normalizer.normalize(string, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", ""); // remove carcteres especiais
-
-                if ( (string.length() == 3 && string.charAt(0) == 'F' && string.charAt(1) == 'I' && string.charAt(2) == 'M') == false) { // para loop quando esquever FIM
-
-                    palavras[cont] = string;
-
-                    cont++;
+                if (!(string.charAt(0) == 'F' && string.charAt(1) == 'I' && string.charAt(2) == 'M')) {
+                    palavras[cont++] = string;
                 }
                 else{ break; }
 
@@ -49,4 +42,3 @@ class q02 {
     }
 
 }
-
