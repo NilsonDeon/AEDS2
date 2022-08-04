@@ -21,14 +21,18 @@ int isMaiuscula(char s[], int index){
 
 int main(){
 
-    char frase[MAX];
+    
     int resp[MAX], cont = 0;
+    
+    char *frase = malloc(MAX);
+    if (frase == NULL) {
+        return 1;
+    }
 
     while (1){
 
-        gets(frase);
-
-        if (strcmp(frase, "FIM")){
+        fgets(frase, MAX, stdin);
+        if (!(frase[0] == 'F' && frase[1] == 'I' && frase[2] == 'M')){
             resp[cont++] = isMaiuscula(frase, 0);
         }
         else{ break; }
@@ -45,6 +49,6 @@ int main(){
         
     }
     
-    
+    free(frase);
     return 0;
 }
