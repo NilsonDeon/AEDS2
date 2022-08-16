@@ -1,0 +1,38 @@
+EX 05:
+    doidao(char c) verifica se a variável c é uma vogal
+    toUpper(char c) deixa letras em maiúsculo
+    isVogal(char c) deixa letras em maiúsculo e verifica se é vogal
+    isLetra(char c) verifica se é letra
+    isConsoante(char c) verifica se é consoante
+
+EX 06:
+    boolean isConsoante(String s, int i){
+        boolean resp = true;
+
+        if(i == s.length()){
+            resp = true;        
+        } else if(isConsoante(s.charAt(i)) == false){
+            resp = false;
+        } else{
+            resp = isConsoante(s,i + 1);        
+        }
+        
+        return resp;
+    }
+
+EX 07:
+    A primeira versão é mais fácil de entender.
+
+EX 08:
+    É fácil de entender, pois é fácil de entender ao que as variáveis e métodos se referem.
+
+EX 09:
+    No primeiro método, a variável "i" é decrementada após o retorno. Já no segundo método, a variável é decrementada antes do retorno.
+
+EX 10:
+
+    1 1 1 1
+
+EX 11:
+   << é o mesmo que multiplicar por dois;
+   >> é o mesmo que dividir por dois.
