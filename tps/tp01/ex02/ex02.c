@@ -3,23 +3,22 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define MAX 700
+#define MAX 1000
 
-bool palindromo(char palavra[]){
+bool isPalindromo(char texto[]){
 
-    int length = strlen(palavra);
-    
+    int length = strlen(texto);
 
-    for (int i = 0; i < length/2 ; i++){
-        // verificacao de duas letras por iteracao
-        if ( palavra[i] != palavra[ ( ( length - 2) - i ) ] ) {
-
+    for(int i = 0 ; i < length/2; i++){
+        
+        // comparando 2 letras por iteracao
+        if(texto[i] != texto[ (length -1) -i]){
             return false;
         }
 
-        return true;
     }
-    
+
+    return true;
 }
 
 bool isFim(char palavra[]){
@@ -28,35 +27,31 @@ bool isFim(char palavra[]){
 
 int main(){
 
-    char resposta[MAX];
-    char* palavra = malloc(MAX);
+    char palavra[MAX];
+    char texto[MAX][MAX];
+    
     int count = 0;
 
-    while (true){
+    while(true){
+        // entrada padrao
+        scanf(" %[^\n]", palavra);
 
-        fgets(palavra, MAX, stdin);
-        if (isFim(palavra)){
+        if(strcmp(palavra, "FIM") == 0){
             break;
-
-        }else if(palindromo(palavra)){
-            resposta[count++] = 's';
-
-        }else{
-            resposta[count++] = 'n';
         }
-        
+
+        strcpy(texto[count], palavra);
+
+        count++;
     }
-    
-    for (int i = 0; i < count; i++){
-        if (resposta[i] == 's'){
+	
+    for(int i = 0; i < count; i++){
+        // saida
+        if(isPalindromo(texto[i])){
             printf("SIM\n");
 
         }else{
             printf("NAO\n");
         }
     }
-    
-
-    free(palavra);
-    return 0;
 }
