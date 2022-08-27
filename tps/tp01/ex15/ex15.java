@@ -4,17 +4,17 @@ public class ex15 {
         return (c >= 'a' && c <= 'z') ? ((char) ((int) c - 32)) : c;
     }
 
-    public static boolean isVogal(String str, int i) {
+    public static boolean isVogal(String palavra, int i) {
         boolean retorno;
 
-        if (i == str.length()) {
+        if (i == palavra.length()) {
             retorno = true;
 
-        }else if  ((toUpper(str.charAt(i)) != 'A') && (toUpper(str.charAt(i)) != 'E') && (toUpper(str.charAt(i)) != 'I') && (toUpper(str.charAt(i)) != 'O') && (toUpper(str.charAt(i)) != 'U')) {
+        }else if  ((toUpper(palavra.charAt(i)) != 'A') && (toUpper(palavra.charAt(i)) != 'E') && (toUpper(palavra.charAt(i)) != 'I') && (toUpper(palavra.charAt(i)) != 'O') && (toUpper(palavra.charAt(i)) != 'U')) {
             retorno = false;
 
         }else {
-            retorno = isVogal(str, ++i);
+            retorno = isVogal(palavra, ++i);
         }
 
         return retorno;
