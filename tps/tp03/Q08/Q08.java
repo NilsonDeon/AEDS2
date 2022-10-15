@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-class Q05{
+class Q08{
 
     public static long now(){
         return new Date().getTime();
@@ -57,7 +57,7 @@ class Q05{
 
         } while (isFim(str));
 
-        lista.heapsortLista(tamanho, compMov);
+        lista.bubbleasortLista(compMov);
         lista.impirmirLista();
 
         // fim da contagem da execucao do codigo
@@ -65,7 +65,7 @@ class Q05{
 
         double tempo =  ( (fim-inicio) / 1000.0 );
 
-        OutputStream os = new FileOutputStream("781626_heapsort.txt"); 
+        OutputStream os = new FileOutputStream("781626_bolha.txt"); 
         Writer wr = new OutputStreamWriter(os); // criação de um escritor
         BufferedWriter br = new BufferedWriter(wr); // adiciono a um escritor de buffer
         
@@ -176,86 +176,27 @@ class Lista{
         return jogo;
     }
 
-    public void heapsortLista(int tamanho, int[] compMov){
-        
+    public void bubbleasortLista(int[] compMov){
 
-        for(int i = ((tamanho / 2) - 1); i >= 0; i--){
+        for (int i = countLista - 1; i > 0; i--) {
 
-            heapfy(tamanho, i, compMov);
-        }
+            for (int j = 0; j < i; j++) {
 
-        for(int i = (tamanho - 1); i > 0; i--){
+                compMov[0]++;
+                if ( ( jogos[j].getDevelopers().compareTo(jogos[j+1].getDevelopers()) > 0 ) ){
 
-            compMov[1] += 3;
+                    compMov[1] += 3;
 
-            // move o maior para o final
-            Games aux = jogos[0];
-            jogos[0] = jogos[i];
-            jogos[i] = aux;
-
-            // continua a ordenacao com a arvore reduzida
-            heapfy(i, 0, compMov);
-        }
-
-    }
-
-    public void heapfy(int tamanho, int i, int[] compMov){
-
-        int maior = i; // setando primeiro valor como maior
-
-        int esquerda = ( ( 2 * i ) + 1);
-        int direita = ( ( 2 * i ) + 2);
-
-        if(esquerda < tamanho && comparaData( jogos[esquerda], jogos[maior], compMov) == 1 ){
-            maior = esquerda;
-        }
-
-        if(direita < tamanho && comparaData( jogos[direita], jogos[maior], compMov) == 1 ){
-            maior = direita;
-        }
-
-        // caso primeiro valor seja igual ao maior, nao e necessario fazer nada
-        if(maior != i){
-
-            compMov[1] += 3;// index 1 = movimentacoes
-
-            Games aux = jogos[i];
-            jogos[i] = jogos[maior];
-            jogos[maior] = aux;
-
-            heapfy(tamanho, maior, compMov);
-        }
-
-
-    }
-
-    public int comparaData(Games jogo1, Games Jogo2, int[] compMov ){
-
-        int resposta = 0;
-
-
-        compMov[0] += 1;
-        switch ( jogo1.getRelease_date().compareTo( Jogo2.getRelease_date() ) ) {
-            
-            case 1:
-                resposta = 1;
-                break;
-
-            case 0:
-
-                compMov[0] += 1;
-                if( jogo1.getName().compareTo( Jogo2.getName() ) > 0 ){
-                    resposta = 1;
+                    Games aux = jogos[j];
+                    jogos[j] = jogos[j+1];
+                    jogos[j+1] = aux;
                 }
 
-                break;
+            }
 
         }
 
-        return resposta;
-
     }
-
 
     public void impirmirLista(){
         for(int i = 0; i < countLista; i++){

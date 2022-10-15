@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-class Q05{
+class Q06{
 
     public static long now(){
         return new Date().getTime();
@@ -57,7 +57,7 @@ class Q05{
 
         } while (isFim(str));
 
-        lista.heapsortLista(tamanho, compMov);
+        lista.sort(0, (tamanho - 1), compMov);
         lista.impirmirLista();
 
         // fim da contagem da execucao do codigo
@@ -65,7 +65,7 @@ class Q05{
 
         double tempo =  ( (fim-inicio) / 1000.0 );
 
-        OutputStream os = new FileOutputStream("781626_heapsort.txt"); 
+        OutputStream os = new FileOutputStream("781626_quicksort.txt"); 
         Writer wr = new OutputStreamWriter(os); // criação de um escritor
         BufferedWriter br = new BufferedWriter(wr); // adiciono a um escritor de buffer
         
@@ -176,83 +176,53 @@ class Lista{
         return jogo;
     }
 
-    public void heapsortLista(int tamanho, int[] compMov){
+    public void sort(int inicio, int fim, int[] compMov){
         
+        if(inicio < fim){
 
-        for(int i = ((tamanho / 2) - 1); i >= 0; i--){
+            int pivot = particao(inicio, fim, compMov);
 
-            heapfy(tamanho, i, compMov);
+            // ordenando do meio para a esquerda
+            sort(inicio, pivot, compMov);
+
+            // ordenando do meio para a direita
+            sort(pivot + 1, fim, compMov);
+
         }
 
-        for(int i = (tamanho - 1); i > 0; i--){
+    }
 
+    public int particao(int inicio, int fim, int[] compMov){
+
+        int meio = (int) ( (inicio + fim) / 2);
+        Games pivot = jogos[meio];
+        int i = (inicio - 1);
+        int j = (fim + 1);
+
+        while(true){
+
+            do{
+                i++;
+                compMov[0]++;
+            }while( ( jogos[i].getRelease_date().compareTo(pivot.getRelease_date()) < 0) || (jogos[i].getRelease_date().compareTo(pivot.getRelease_date()) == 0) && (jogos[i].getRelease_date().compareTo(pivot.getRelease_date()) < 0 ) );
+
+            do{
+                j--;
+                compMov[0]++;
+            }while( ( jogos[j].getRelease_date().compareTo(pivot.getRelease_date()) > 0) || (jogos[j].getRelease_date().compareTo(pivot.getRelease_date()) == 0) && (jogos[j].getRelease_date().compareTo(pivot.getRelease_date()) > 0 ) );
+
+            // flag de parada do loop
+            if(i >= j){
+                return j;
+            }
+
+            // troca de posicoes
             compMov[1] += 3;
-
-            // move o maior para o final
-            Games aux = jogos[0];
-            jogos[0] = jogos[i];
-            jogos[i] = aux;
-
-            // continua a ordenacao com a arvore reduzida
-            heapfy(i, 0, compMov);
-        }
-
-    }
-
-    public void heapfy(int tamanho, int i, int[] compMov){
-
-        int maior = i; // setando primeiro valor como maior
-
-        int esquerda = ( ( 2 * i ) + 1);
-        int direita = ( ( 2 * i ) + 2);
-
-        if(esquerda < tamanho && comparaData( jogos[esquerda], jogos[maior], compMov) == 1 ){
-            maior = esquerda;
-        }
-
-        if(direita < tamanho && comparaData( jogos[direita], jogos[maior], compMov) == 1 ){
-            maior = direita;
-        }
-
-        // caso primeiro valor seja igual ao maior, nao e necessario fazer nada
-        if(maior != i){
-
-            compMov[1] += 3;// index 1 = movimentacoes
-
             Games aux = jogos[i];
-            jogos[i] = jogos[maior];
-            jogos[maior] = aux;
-
-            heapfy(tamanho, maior, compMov);
-        }
-
-
-    }
-
-    public int comparaData(Games jogo1, Games Jogo2, int[] compMov ){
-
-        int resposta = 0;
-
-
-        compMov[0] += 1;
-        switch ( jogo1.getRelease_date().compareTo( Jogo2.getRelease_date() ) ) {
-            
-            case 1:
-                resposta = 1;
-                break;
-
-            case 0:
-
-                compMov[0] += 1;
-                if( jogo1.getName().compareTo( Jogo2.getName() ) > 0 ){
-                    resposta = 1;
-                }
-
-                break;
+            jogos[i] = jogos[j];
+            jogos[j] = aux;
 
         }
-
-        return resposta;
 
     }
 

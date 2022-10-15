@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
-class Q05{
+class Q09{
 
     public static long now(){
         return new Date().getTime();
@@ -57,15 +57,15 @@ class Q05{
 
         } while (isFim(str));
 
-        lista.heapsortLista(tamanho, compMov);
+        lista.sortLista(0, (tamanho - 1), compMov);
         lista.impirmirLista();
 
         // fim da contagem da execucao do codigo
         double fim = now();
 
-        double tempo =  ( (fim-inicio) / 1000.0 );
+        double tempo =  ( (fim - inicio) / 1000.0 );
 
-        OutputStream os = new FileOutputStream("781626_heapsort.txt"); 
+        OutputStream os = new FileOutputStream("781626_mergesort.txt"); 
         Writer wr = new OutputStreamWriter(os); // criação de um escritor
         BufferedWriter br = new BufferedWriter(wr); // adiciono a um escritor de buffer
         
@@ -176,91 +176,92 @@ class Lista{
         return jogo;
     }
 
-    public void heapsortLista(int tamanho, int[] compMov){
-        
+    public void sortLista(int inicio, int fim, int[] compMov){
 
-        for(int i = ((tamanho / 2) - 1); i >= 0; i--){
+        if (inicio < fim) {
+            // Find the middle point
+            int meio = inicio + (fim - inicio) / 2;
 
-            heapfy(tamanho, i, compMov);
-        }
+            // Sort first and second halves
+            sortLista(inicio, meio, compMov);
+            sortLista(meio + 1, fim, compMov);
 
-        for(int i = (tamanho - 1); i > 0; i--){
+            // Merge the sorted halves
+            merge(inicio, meio, fim, compMov);
 
-            compMov[1] += 3;
-
-            // move o maior para o final
-            Games aux = jogos[0];
-            jogos[0] = jogos[i];
-            jogos[i] = aux;
-
-            // continua a ordenacao com a arvore reduzida
-            heapfy(i, 0, compMov);
         }
 
     }
 
-    public void heapfy(int tamanho, int i, int[] compMov){
+    public void merge(int inicio, int meio, int fim, int[] compMov){
 
-        int maior = i; // setando primeiro valor como maior
+        // encontra tamanho dos arrays a serem juntados
+        int tam1 = meio - inicio + 1;
+        int tam2 = fim - meio;
+ 
+        // adicionando data em arrays temporarios
+        Games[] aux1 = new Games[tam1];
+        Games[] aux2 = new Games[tam2];
 
-        int esquerda = ( ( 2 * i ) + 1);
-        int direita = ( ( 2 * i ) + 2);
-
-        if(esquerda < tamanho && comparaData( jogos[esquerda], jogos[maior], compMov) == 1 ){
-            maior = esquerda;
+        for (int i = 0; i < tam1; ++i){
+            compMov[1]++;
+            aux1[i] = jogos[inicio + i];
         }
 
-        if(direita < tamanho && comparaData( jogos[direita], jogos[maior], compMov) == 1 ){
-            maior = direita;
+        for (int j = 0; j < tam2; ++j){
+            compMov[1]++;
+            aux2[j] = jogos[meio + 1 + j];
         }
 
-        // caso primeiro valor seja igual ao maior, nao e necessario fazer nada
-        if(maior != i){
+        int i = 0, j = 0;
 
-            compMov[1] += 3;// index 1 = movimentacoes
+        int k = inicio;
+        while (i < tam1 && j < tam2) {
 
-            Games aux = jogos[i];
-            jogos[i] = jogos[maior];
-            jogos[maior] = aux;
+            compMov[0] += 3;
 
-            heapfy(tamanho, maior, compMov);
+            if ((aux1[i].getUpvotes() < aux2[j].getUpvotes()) || ((aux1[i].getUpvotes() == aux2[j].getUpvotes()) && (aux1[i].getName().compareTo(aux2[j].getName()) < 0 ))) {
+
+                jogos[k] = aux1[i];
+                i++;
+
+            } else {
+
+                jogos[k] = aux2[j];
+                j++;
+            }
+
+            k++;
+        }
+
+        // adicionando o restante
+        while (i < tam1) {
+            compMov[1]++;
+
+            jogos[k] = aux1[i];
+            i++;
+            k++;
+
+        }
+
+        while (j < tam2) {
+            compMov[1]++;
+
+            jogos[k] = aux2[j];
+            j++;
+            k++;
+
         }
 
 
     }
-
-    public int comparaData(Games jogo1, Games Jogo2, int[] compMov ){
-
-        int resposta = 0;
-
-
-        compMov[0] += 1;
-        switch ( jogo1.getRelease_date().compareTo( Jogo2.getRelease_date() ) ) {
-            
-            case 1:
-                resposta = 1;
-                break;
-
-            case 0:
-
-                compMov[0] += 1;
-                if( jogo1.getName().compareTo( Jogo2.getName() ) > 0 ){
-                    resposta = 1;
-                }
-
-                break;
-
-        }
-
-        return resposta;
-
-    }
-
 
     public void impirmirLista(){
+
         for(int i = 0; i < countLista; i++){
             jogos[i].imprimir();
         }
+
     }
 }
 
