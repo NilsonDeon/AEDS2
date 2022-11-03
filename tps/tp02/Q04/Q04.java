@@ -614,48 +614,95 @@ class Index{
 
 class Q04{
 
-    private static void quickSort(String[] arr, int inicio, int fim){
+    // contador de comparacoes (eu sei que não deveria usar variaveis globais, mas eu nao pensei em outra forma)
+    static int countGlobal = 0;
 
-        int i = inicio;
-        int j = fim;
+    public static long now(){
+        return new Date().getTime();
+    }
 
-        if (j - i >= 1){
+    public static void sort(String[] arr, int inicio, int fim){
+        
+        if(inicio < fim){
 
-            int meio = ((i + j) / 2);
-            String pivot = arr[meio];
-            
-            while (j > i){
+            int pivot = particao(arr, inicio, fim);
 
-                while (arr[i].compareTo(pivot) <= 0 && i < fim && j > i){
-                    i++;
-                }
-
-                while (arr[j].compareTo(pivot) >= 0 && j > inicio && j >= i){
-                    j--;
-                }
-                
-                if (j > i){
-                    String aux = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = aux;
-                }
-                    
-            }
-            
             // ordenando do meio para a esquerda
-            quickSort(arr, inicio, j - 1);
+            sort(arr, inicio, pivot);
 
             // ordenando do meio para a direita
-            quickSort(arr, j + 1, fim);
+            sort(arr, pivot + 1, fim);
+
+        }
+
+    }
+
+    public static int particao(String[] arr, int inicio, int fim){
+
+        int meio = (int) ((inicio + fim) / 2);
+        String pivot = arr[meio];
+        int i = inicio - 1;
+        int j = fim + 1;
+
+        while(true){
+
+            do{
+                i++;
+            }while( arr[i].compareTo(pivot) < 0 );
+
+            do{
+                j--;
+            }while( arr[j].compareTo(pivot) > 0 );
+
+            // flag de parada do loop
+            if(i >= j){
+                return j;
+            }
+
+            // troca de posicoes
+            String aux = arr[i];
+            arr[i] = arr[j];
+            arr[j] = aux;
 
         }
     }
 
-    /*public static boolean pesquisaBinaria(Games[] jogos, String nome, int i){
+    public static boolean pesquisaBinaria(String[] jogos, String nome, int i){
 
+        int inicio = 0;
+        int fim = i;
+        int meio;
+        boolean resposta = false;
         
+        while( inicio <= fim ){
 
-    }*/
+            meio = ( (inicio + fim) / 2 );
+
+            countGlobal++;
+            if( nome.compareTo( jogos[meio] ) < 0 ){
+
+                fim = (meio - 1);
+
+            }
+            else if( nome.compareTo( jogos[meio] ) > 0 ){
+                // comparacao do else if quando da certo
+                countGlobal++;
+                inicio = (meio + 1);
+
+            }else{
+                // comparacao do else if quando da errado
+                countGlobal++;
+
+                resposta = true;
+                break;
+
+            }
+
+        }
+
+        return resposta;
+
+    }
 
     public static boolean isFim(String s){
         return !((s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1) == 'I' 
@@ -675,7 +722,7 @@ class Q04{
         String valores = "", str = "";
         int i = 0, j = 0, k = 0, l = 0;
 
-        InputStreamReader isr = new InputStreamReader(new FileInputStream ("tmp/games.csv"));
+        InputStreamReader isr = new InputStreamReader(new FileInputStream ("/tmp/games.csv"));
         BufferedReader entrada = new BufferedReader(isr);
 
         MyIO.setCharset("UTF-8");
@@ -706,34 +753,45 @@ class Q04{
 
         } while (isFim(str));
 
+    
     // recebendo obj dos jogos com os ids recebidos
         for(int m = 0; m < j; m++){
             Games aux2 = games[m].encontraId(games, i, id[m]);
             aux[l++] = aux2.getName();
         }
 
-    // ordenando vetor de (jogos)
-        quickSort(aux, 0, (l - 1));
-        for(String a : aux){
-            if(a != null){
-                MyIO.println(a);
-            }
-        }
+    // ordenando vetor de (nomes)
+        sort(aux, 0, (l - 1));
         
+    // inicio da contagem da execucao do codigo
+        double inicio = now();
 
     // pesquisando jogos com os nomes recebidos
-        /*for(int n = 0; n < k; n++){
+        for(int n = 0; n < k; n++){
 
-            if(){
+            if( pesquisaBinaria(aux, nomes[n], l) ){
 
                 MyIO.println("SIM");
 
             }else{
+
                 MyIO.println("NAO");
+
             }
             
-        }*/
+        }
 
+    // fim da contagem da execucao do codigo
+        double fim = now();
+
+        double tempo =  ( (fim-inicio) / 1000.0 );
+
+    // arquivo de log
+        OutputStream os = new FileOutputStream("781626_binaria.txt"); 
+        Writer wr = new OutputStreamWriter(os); // criação de um escritor
+        BufferedWriter br = new BufferedWriter(wr); // adiciono a um escritor de buffer
+        br.write("781626\t" + tempo + "s.\t" + countGlobal);
+        br.close();
     }
 }
  

@@ -2,6 +2,129 @@ import java.io.*;
 import java.util.*;
 import java.text.*;
 
+class Q06{
+
+    public static boolean isFim(String s){
+        return !((s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1) == 'I' 
+        && s.charAt(2) == 'M'));
+    }
+
+
+    public static void main(String args[]) throws Exception, ParseException {
+
+        Games[] games = new Games[5000];
+
+        Pilha pilha = new Pilha();
+
+        // variaveis auxiliares e arrays
+        Games gameAux = new Games();
+        String valores = "", str = "";
+        int i = 0, j = 0, k = 0, id = 0;
+
+        InputStreamReader isr = new InputStreamReader(new FileInputStream ("/tmp/games.csv"));
+        BufferedReader entrada = new BufferedReader(isr);
+
+        MyIO.setCharset("UTF-8");
+
+    // le arquivo enquanto tem jogo
+        while ( (valores = entrada.readLine() ) != null){
+            games[i] = new Games();
+            games[i] = games[i].ler(valores);
+            i++;
+        }
+        entrada.close();
+
+    // inserindo entrada do usuario na pilha
+        str = MyIO.readLine();
+        do{
+
+            id = Integer.parseInt(str);
+            gameAux = games[0].encontraId(games, i, id);
+
+            pilha.empilha(gameAux);
+
+            str = MyIO.readLine();
+
+        } while (isFim(str));
+
+    // entrada de manipulacao da pilha
+        k = MyIO.readInt();
+        for(int l = 0; l < k; l++){
+            
+            String aux = MyIO.readLine();
+            String[] aux2 = aux.split(" ");
+
+            switch (aux2[0]) {
+            
+                case "I":
+                    
+                    gameAux = games[0].encontraId(games, i, Integer.parseInt(aux2[1]) );
+                    pilha.empilha(gameAux);
+
+                    break;
+                
+                case "R":
+
+                    gameAux = pilha.desempilha( );
+                    MyIO.println( "(R) " + gameAux.getName() );
+
+                    break;
+
+            }
+
+        }
+
+        pilha.impirmirPilha();
+        
+    }
+        
+
+}
+
+class Pilha{
+
+    Games[] jogos;
+    private int countPilha;
+
+    public Pilha(){
+        jogos = new Games[250];
+        countPilha = 0;
+    }
+
+    public void empilha(Games jogo)throws Exception {
+
+        if(countPilha >= jogos.length){
+            throw new Exception("Pilha cheia");
+        }
+
+        jogos[countPilha] = jogo;
+        countPilha++;
+
+    }
+
+    public Games desempilha()throws Exception {
+
+        if(countPilha <= 0){
+            throw new Exception("Pilha vazia");
+        }
+
+        countPilha--;
+
+        return jogos[countPilha];
+
+    }
+
+    public void impirmirPilha(){
+
+        for(int i = 0; i < countPilha; i++){
+
+            MyIO.print("[" + i + "] ");
+            jogos[i].imprimir();
+        }
+
+    }
+}
+
 class Games{
 
     private int app_id;
@@ -205,7 +328,7 @@ class Games{
     public void imprimir(){
         String mostrar = app_id + " " + name + " " + trataData(release_date) + " " + owners + " " + age + " " + trataPrice(price) + " " + dlcs + trataArr(languages) + " " + website + " " + windows + " " + mac + " " + linux + " " + trataUpVote(upvotes) + " " + trataPlayTime(avg_pt) + " " + developers + trataArr(genres);
 
-        MyIO.println(mostrar);
+        MyIO.println (mostrar);
     }
 
     // chamada de leitura e atribuição de valores
@@ -321,11 +444,11 @@ class Games{
 
             playtime += (h + "h " + m + "m");
 
-        }else if(h > 0 && m < 0){ 
+        }else if(h > 0){ 
 
             playtime += (h + "h");
 
-        }else if(h < 0 && m > 0){
+        }else if(m > 0){
 
             playtime += (m + "m");
 
@@ -609,172 +732,5 @@ class Index{
     public int getIndex(){ return (this.index); }
   
     public void setIndex(int index){ this.index = index; }
-
-}
-
-class Q03{
-
-    // contador de comparacoes (eu sei que não deveria usar variaveis globais, mas eu nao pensei em outra forma)
-    static int countGlobal = 0;
-
-    public static long now(){
-        return new Date().getTime();
-    }
-
-    public static void quickSort(int[] arr, int inicio, int fim){
-        
-        if(inicio < fim){
-
-            int pivot = particao(arr, inicio, fim);
-
-            // ordenando do meio para a esquerda
-            quickSort(arr, inicio, pivot);
-
-            // ordenando do meio para a direita
-            quickSort(arr, pivot + 1, fim);
-
-        }
-
-    }
-
-    public static int particao(int[] arr, int inicio, int fim){
-
-        int meio = (int) ((inicio + fim) / 2);
-        int pivot = arr[meio];
-        int i = inicio - 1;
-        int j = fim + 1;
-
-        while(true){
-
-            do{
-                i++;
-            }while(arr[i] < pivot);
-
-            do{
-                j--;
-            }while(arr[j] > pivot);
-
-            // flag de parada do loop
-            if(i >= j){
-                return j;
-            }
-
-            // troca de posicoes
-            int aux = arr[i];
-            arr[i] = arr[j];
-            arr[j] = aux;
-
-        }
-    }
-
-    public static boolean pesquisaSequencial(Games[] jogos, String nome, int i){
-        int count = 0;
-
-        boolean resposta = false;
-
-        while(count <= i){
-
-            countGlobal++;
-            if( nome.equals(jogos[count].getName()) ){
-
-                resposta = true;
-                break;
-            }
-                
-            count++;
-            
-        }
-        return resposta;
-    }
-
-    public static boolean isFim(String s){
-        return !((s.length() == 3 && s.charAt(0) == 'F' && s.charAt(1) == 'I' 
-        && s.charAt(2) == 'M'));
-    }
-
-
-    public static void main(String args[]) throws Exception, ParseException {
-
-        Games[] games = new Games[5000];
-
-        Games[] aux = new Games[5000];
-
-        int[] id = new int[60];
-        String[] nomes = new String[60];
-
-        String valores = "", str = "";
-        int i = 0, j = 0, k = 0, l = 0;
-
-        InputStreamReader isr = new InputStreamReader(new FileInputStream ("/tmp/games.csv"));
-        BufferedReader entrada = new BufferedReader(isr);
-
-        MyIO.setCharset("UTF-8");
-
-    // le arquivo enquanto tem jogo
-        while ((valores = entrada.readLine()) != null){
-            games[i] = new Games();
-            games[i] = games[i].ler(valores);
-            i++;
-        }
-        entrada.close();
-
-    // entrada do usuario (IDs)
-        str = MyIO.readLine();
-        do{
-            id[j] = Integer.parseInt(str);
-            j++;
-            str = MyIO.readLine();
-
-        } while (isFim(str));
-    
-    // ordenando vetor de (jogos)
-        quickSort(id, 0, (j - 1) );
-
-    // entrada do usuario nomes
-        str = MyIO.readLine();
-        do{
-            nomes[k] = str;
-            k++;
-            str = MyIO.readLine();
-
-        } while (isFim(str));
-
-    // recebendo obj dos jogos com os ids recebidos
-        for(int m = 0; m < j; m++){
-
-            aux[l++] = games[m].encontraId(games, i, id[m]);
-
-        }
-
-    // inicio da contagem da execucao do codigo
-        double inicio = now();
-
-    // pesquisando jogos com os nomes recebidos
-        for(int n = 0; n < k; n++){
-
-            if( pesquisaSequencial(aux, nomes[n], (l - 1) )){
-
-                MyIO.println("SIM");
-
-            }else{
-                MyIO.println("NAO");
-            }
-            
-        }
-
-    // fim da contagem da execucao do codigo
-        double fim = now();
-
-        double tempo =  ( (fim-inicio) / 1000.0 );
-
-        OutputStream os = new FileOutputStream("781626_sequencial.txt"); 
-        Writer wr = new OutputStreamWriter(os); // criação de um escritor
-        BufferedWriter br = new BufferedWriter(wr); // adiciono a um escritor de buffer
-        br.write("781626\t" + tempo + "s.\t" + countGlobal);
-        br.close();
-
-    }
-
-    
 }
  
